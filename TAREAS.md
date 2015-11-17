@@ -36,3 +36,15 @@
 		d. que se pueda ejecutar la aplicacion en android
 		e. administrar el proyecto en github
 
+#### Favor anotarse para las tareas que mejor le vengan a sus conocimientos y fortalezas
+
+####	Nombre			Tarea
+	Julio Lerma
+	Bolivar Gonzalez
+	Dario Sanchez
+	Eliecer Samaniego
+	Floyd Perez
+	Kadhir Arauz
+	Moises Mirasabal
+	Rodrigo Vergara
+
