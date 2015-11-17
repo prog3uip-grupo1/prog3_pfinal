@@ -38,7 +38,7 @@
 
 #### Favor anotarse para las tareas que mejor le vengan a sus conocimientos y fortalezas
 
-	Nombre			Tarea
+	Nombre					Tarea
 	Julio Lerma
 	Bolivar Gonzalez
 	Dario Sanchez
