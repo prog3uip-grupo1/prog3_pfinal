@@ -1,0 +1,8 @@
+#Por favor añadir las ideas con el siguiente formato
+#Nombre: 
+#Idea: Descripción
+#
+Nombre: Rodrigo Vergara
+Idea1: App botón de pánico (envio de alertas via SMS, email, 911, GPS, - NO redes sociales -)
+Idea2: App directorio personal administrativo y profesores, información de carreras, horarios, eventos (opcional).
+Idea3: App
