@@ -37,7 +37,7 @@ requirements = kivy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
-# requirements.source.kivy = ../../kivy
+requirements.source.kivy = /home/jlerma/kivyinstall/lib/python3.5/site-packages/kivy
 
 # (list) Garden requirements
 #garden_requirements =
