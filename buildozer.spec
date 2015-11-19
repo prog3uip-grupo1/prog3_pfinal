@@ -4,10 +4,10 @@
 title = Proyecto Final
 
 # (str) Package name
-package.name = pfinalapp
+package.name = pfinal
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = uip.edu
+package.domain = org.uip
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -16,20 +16,20 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 
 # (list) Source files to exclude (let empty to not exclude anything)
-#source.exclude_exts = spec,md,pdf,txt
+source.exclude_exts = spec
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-#source.exclude_dirs = tests, bin
+source.exclude_dirs = bin
 
 # (list) List of exclusions using pattern matching
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version.regex = __version__ = ['"](.*)['"]
-version.filename = %(source.dir)s/main.py
+#version = 0.1
 
 # (str) Application versioning (method 2)
-# version = 1.2.0
+version.regex = __version__ = ['"](.*)['"]
+version.filename = %(source.dir)s/main.py
 
 # (list) Application requirements
 # comma seperated e.g. requirements = sqlite3,kivy
@@ -37,7 +37,7 @@ requirements = kivy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
-requirements.source.kivy = /home/jlerma/kivyinstall/lib/python3.5/site-packages/kivy
+# requirements.source.kivy = ../../kivy
 
 # (list) Garden requirements
 #garden_requirements =
