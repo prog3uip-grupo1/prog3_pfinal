@@ -1,0 +1,31 @@
+#Definicion de grid de datos
+<GridProyecto>:
+    cols: self.columnas
+    spacing: 1
+    size_hint: 1, None
+    row_default_height: self.rHeight
+    row_force_default: False
+
+#Definicion de encabezados de grid de datos
+<GridHeader>:
+    size_hint_x: None
+    size_hint_y: None
+    width: self.width
+    height: self.height
+    padding: 10
+    canvas:
+        Color:
+            rgb: self.bgcolor
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+#Definicion de celdas de grid de datos
+<GridRow>:
+    size: self.size
+    canvas:
+        Color:
+            rgb: self.bgcolor
+        Rectangle:
+            size: self.size
+            pos: self.pos
