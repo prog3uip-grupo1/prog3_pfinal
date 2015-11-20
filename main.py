@@ -20,8 +20,11 @@ class MainWindow(AnchorLayout):
         self.gridTest.addcolumna("Articulo", "key", "center", 200, False)
         self.gridTest.addcolumna("Descripcion", "txt", "left", 356, False)
         self.gridTest.addcolumna("Cantidad", "txt", "right", 100, False)
-        self.gridTest.addcolumna("Borrar", "borrar", "na", 70, False)
+        self.gridTest.addcolumna("Borrar", "bor", "na", 70, False)
         self.gridTest.addheaders()
+
+        self.gridTest.addgridrow([True, "1", "Articulo 1", "10", False])
+
 
 
 class PFinalApp(App):

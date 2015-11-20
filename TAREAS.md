@@ -41,10 +41,10 @@
 	Nombre					Tarea
 	Julio Lerma
 	Bolivar Gonzalez
-	Dario Sanchez
-	Eliecer Samaniego
+	Dario Sanchez               5
+	Eliecer Samaniego           4
 	Floyd Perez
 	Kadhir Arauz
-	Moises Mirasabal
-	Rodrigo Vergara
+	Moises Mirasabal            1
+	Rodrigo Vergara             2
 
