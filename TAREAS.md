@@ -39,7 +39,7 @@
 #### Favor anotarse para las tareas que mejor le vengan a sus conocimientos y fortalezas
 
 	Nombre					Tarea
-	Julio Lerma
+	Julio Lerma                 3
 	Bolivar Gonzalez
 	Dario Sanchez               5
 	Eliecer Samaniego           4
