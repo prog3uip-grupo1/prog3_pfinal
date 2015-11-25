@@ -1,7 +1,14 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
+
+
+class Usuarios(AbstractUser):
+    tac = models.BooleanField(default=False)
+    security_level = models.IntegerField(default=0)
+
+
 class Estudiantes(models.Model):
     carnet = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=50, blank=False)
@@ -11,6 +18,12 @@ class Estudiantes(models.Model):
 
     class Meta:
         ordering = ('carnet',)
+
+
+class ERegistro(models.Model):
+    estudiante = models.OneToOneField('Estudiantes')
+    usuario = models.ForeignKey('Usuarios')
+    creado  = models.DateField(auto_now_add=True)
 
 
 class Profesores(models.Model):
@@ -40,6 +53,8 @@ class Periodos(models.Model):
 class Sedes(models.Model):
     sedeid = models.IntegerField(primary_key=True, auto_created=True)
     descripcion = models.CharField(max_length=50, blank=False)
+    direccion = models.CharField(max_length=256, blank=False)
+    telefono = models.CharField(max_length=25, blank=True, default='')
 
 
 class Salones(models.Model):
@@ -71,7 +86,7 @@ class Horas(models.Model):
     tipo = models.CharField(choices=TIPOS_HORA, default='I', max_length=1, blank=False)
 
 
-class Intervalo(models.Model):
+class Intervalos(models.Model):
     intervaloid = models.IntegerField(primary_key=True, auto_created=True)
     inicio = Horas()
     fin = Horas()
@@ -80,10 +95,10 @@ class Intervalo(models.Model):
 class Horarios(models.Model):
     horarioid = models.IntegerField(primary_key=True, auto_created=True)
     dia = models.IntegerField(choices=DAYS_OF_WEEK)
-    hora = models.ManyToManyField(Intervalo)
+    hora = models.ManyToManyField(Intervalos)
 
 
-class Oferta(models.Model):
+class Ofertas(models.Model):
     ofertaid = models.IntegerField(primary_key=True, auto_created=True)
     sede = models.ForeignKey('Sedes')
     periodo = models.ForeignKey('Periodos')
@@ -94,3 +109,8 @@ class Grupos(models.Model):
     grupoid = models.IntegerField(primary_key=True, auto_created=True)
     salon = models.ForeignKey('Salones')
     horario = models.ForeignKey('Horarios')
+
+
+class GruposEstudiantes(models.Model):
+    grupoid = models.OneToOneField('Grupos')
+    estudiante = models.ForeignKey('Estudiantes')

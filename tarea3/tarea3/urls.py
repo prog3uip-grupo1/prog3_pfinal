@@ -13,17 +13,11 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import url, include
-from rest_framework import routers
-from tarea3.pfinalapi import views
+from django.conf.urls import patterns, include, url
+from django.contrib import admin
 
-router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
-
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
-urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-]
+urlpatterns = patterns('',
+                       url(r'^', include('tarea3.pfinalapi.urls')),
+                       url(r'^admin/', include(admin.site.urls)),
+                       url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+                       )

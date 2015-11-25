@@ -4,16 +4,18 @@ from kivy.uix.checkbox import CheckBox
 from kivy.uix.label import Label
 from kivy.properties import StringProperty, NumericProperty, ListProperty, BooleanProperty
 from putils import PGDatos
+from api_client.sqldata import SQLData
 
 
 class GridField(object):
 
-    def __init__(self, fldheader="", fldtype="", fldalign="", flddisabled=False, fldwidth=100):
+    def __init__(self, fldheader="", fldtype="", fldalign="", flddisabled=False, fldwidth=100, flddata=''):
         self.fldHeader = fldheader
         self.fldType = fldtype
         self.fldAlign = fldalign
         self.fldDisabled = flddisabled
         self.fldWidth = fldwidth
+        self.fldData = flddata
         self.fldCol = -1
 
 
@@ -52,24 +54,37 @@ class GridProyecto(FloatLayout):
     rHeight = NumericProperty(30)
     columnas = NumericProperty()
     filas = NumericProperty()
-    colHeaders = ListProperty()
-    rowTypes = ListProperty()
-    rowAlign = ListProperty()
-    colDisabled = ListProperty()
-    colSizes = ListProperty()
+    # colHeaders = ListProperty()
+    # rowTypes = ListProperty()
+    # rowAlign = ListProperty()
+    # colDisabled = ListProperty()
+    # colSizes = ListProperty()
     gfields = GridFields()
+    __datasource = SQLData
+    __rows = PGDatos()
 
-    _rows = PGDatos()
+    @property
+    def datasource(self):
+        return self.__rows
 
-    def addcolumna(self, colheader, rowtype="txt", rowalign="center", colsize=200, coldisable=False):
+    @datasource.setter
+    def datasource(self, value):
+        __datasource = value
+        for rowdic in __datasource.getapidata():
+            datarow = []
+            for col in range(self.gfields.columns):
+                datarow.append(rowdic[self.gfields.getfield(col).fldData])
+            self.addgridrow(datarow)
+
+    def addcolumna(self, colheader, rowtype="txt", rowalign="center", colsize=200, coldisable=False, datafield=''):
         """Agrega una columna al grid"""
-        self.colHeaders.append(colheader)
-        self.rowTypes.append(rowtype)
-        self.rowAlign.append(rowalign)
-        self.colDisabled.append(coldisable)
-        self.colSizes.append(colsize)
+        # self.colHeaders.append(colheader)
+        # self.rowTypes.append(rowtype)
+        # self.rowAlign.append(rowalign)
+        # self.colDisabled.append(coldisable)
+        # self.colSizes.append(colsize)
         self.gfields.add(GridField(fldheader=colheader, fldtype=rowtype, fldalign=rowalign, flddisabled=coldisable,
-                                   fldwidth=colsize))
+                                   fldwidth=colsize, flddata=datafield))
         self.columnas = self.gfields.columns
 #        self.gfields.columns += 1
 
@@ -95,7 +110,7 @@ class GridProyecto(FloatLayout):
         gBdy.bind(minimum_height=gBdy.setter('height'), minimum_width=gBdy.setter('width'))
         self.filas += 1
         for col in range(self.columnas):
-            if self.rowTypes[col] == "txt" or self.rowTypes[col] == "key":
+            if self.gfields.getfield(col).fldType == "txt" or self.gfields.getfield(col).fldType == "key":
                 gBdy.add_widget(self.getcelllabel(self.filas, col, rowdata[col], self.gfields.getfield(col).fldAlign,
                                                   self.gfields.getfield(col).fldDisabled,
                                                   self.gfields.getfield(col).fldWidth,
@@ -104,7 +119,7 @@ class GridProyecto(FloatLayout):
                 gBdy.add_widget(self.getcellchk(self.filas, col, rowdata[col], self.gfields.getfield(col).fldDisabled,
                                                 self.gfields.getfield(col).fldWidth,
                                                 self.gfields.getfield(col).fldType))
-        self._rows.addrow(rowdata[self.gfields.key], rowdata[:self.gfields.key] + rowdata[(self.gfields.key + 1):])
+        self.__rows.addrow(rowdata[self.gfields.key], rowdata[:self.gfields.key] + rowdata[(self.gfields.key + 1):])
 
     def getcellchk(self, fila, columna, Activo, Disabled = False, Size=200, Tipo="chk"):
         """Funcion que devuelve una celda completa para manejo de checkbox"""
@@ -124,7 +139,7 @@ class GridProyecto(FloatLayout):
         cell = GridCell()
         cell.id = "{0}_row{0}_col{1}".format(Tipo, fila, columna)
         if Tipo == "key":
-            cell.key = Texto
+            cell.key = str(Texto)
         cell.width = Size
         cell.padding = [5,5]
         cell.text = '[color=000000]{0}[/color]'.format(Texto)
