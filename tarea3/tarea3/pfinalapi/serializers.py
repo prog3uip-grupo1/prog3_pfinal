@@ -1,6 +1,33 @@
 from rest_framework import serializers
 from tarea3.pfinalapi.models import Estudiantes, Profesores, Periodos, Grupos, Materias, Sedes, Salones, Intervalos, \
-    Horarios, Horas, Ofertas, GruposEstudiantes, ERegistro
+    Horarios, Horas, Ofertas, GruposEstudiantes, ERegistro, UserProfile
+from rest_auth.serializers import UserDetailsSerializer
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+
+
+class UserSerializer(UserDetailsSerializer):
+
+    carnet = serializers.CharField(source="userprofile.carnet")
+
+    class Meta(UserDetailsSerializer.Meta):
+        fields = UserDetailsSerializer.Meta.fields + ('carnet',)
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('userprofile', {})
+        carnet = profile_data.get('carnet')
+
+        instance = super(UserSerializer, self).update(instance, validated_data)
+
+        # get and update user profile
+        profile = instance.userprofile
+        if profile_data and carnet:
+            profile.carnet = carnet
+            profile.save()
+        return instance
 
 
 class EstudiantesSerializer(serializers.ModelSerializer):

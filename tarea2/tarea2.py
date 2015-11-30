@@ -69,8 +69,8 @@ class GridProyecto(FloatLayout):
 
     @datasource.setter
     def datasource(self, value):
-        __datasource = value
-        for rowdic in __datasource.getapidata():
+        self.__datasource = value
+        for rowdic in self.__datasource.getapidata():
             datarow = []
             for col in range(self.gfields.columns):
                 datarow.append(rowdic[self.gfields.getfield(col).fldData])

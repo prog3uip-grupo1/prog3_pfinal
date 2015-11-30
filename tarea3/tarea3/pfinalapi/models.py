@@ -5,12 +5,17 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Usuarios(AbstractUser):
-    tac = models.BooleanField(default=False)
-    security_level = models.IntegerField(default=0)
+    pass
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(Usuarios)
+    # custom fields for user
+    carnet = models.CharField(max_length=10, unique=True, db_index=True)
 
 
 class Estudiantes(models.Model):
-    carnet = models.IntegerField(primary_key=True)
+    carnet = models.CharField(max_length=10, primary_key=True)
     nombre = models.CharField(max_length=50, blank=False)
     apellido = models.CharField(max_length=50, blank=False)
     email = models.EmailField()
@@ -22,7 +27,7 @@ class Estudiantes(models.Model):
 
 class ERegistro(models.Model):
     estudiante = models.OneToOneField('Estudiantes')
-    usuario = models.ForeignKey('Usuarios')
+    usuario = models.OneToOneField('Usuarios')
     creado  = models.DateField(auto_now_add=True)
 
 

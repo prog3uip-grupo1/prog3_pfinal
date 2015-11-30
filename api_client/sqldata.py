@@ -23,7 +23,7 @@ class SQLData(object):
             self.__tmpresult = {}
 
     def getapidata(self):
-        data = UrlRequest('{0}/{1}.json'.format(self.__url, self.view), on_success=self.__getdatos,
+        data = UrlRequest('{0}/{1}?format=json'.format(self.__url, self.view), on_success=self.__getdatos,
                                  on_failure=self.__geterror, on_error=self.__geterror)
         data.wait()
 

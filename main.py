@@ -17,12 +17,12 @@ class MainWindow(AnchorLayout):
     def __init__(self):
 
         AnchorLayout.__init__(self)
-
-        self.gridTest.addcolumna("Carnet", "key", "center", 90, False, 'carnet')
-        self.gridTest.addcolumna("Nombre", "txt", "left", 200, False, 'nombre')
-        self.gridTest.addcolumna("Apellido", "txt", "left", 200, False, 'apellido')
-        self.gridTest.addcolumna("Email", "txt", "left", 310, False, 'email')
-        self.datos.view = "estudiantes"
+        self.gridTest.addcolumna("Carnet", "txt", "left", 50, False, 'carnet')
+        self.gridTest.addcolumna("Usuario", "key", "center", 90, False, 'username')
+        self.gridTest.addcolumna("Nombre", "txt", "left", 150, False, 'first_name')
+        self.gridTest.addcolumna("Apellido", "txt", "left", 150, False, 'last_name')
+        self.gridTest.addcolumna("Email", "txt", "left", 355, False, 'email')
+        self.datos.view = "rest-auth/user"
         self.gridTest.datasource = self.datos
 
         self.gridTest.addheaders()

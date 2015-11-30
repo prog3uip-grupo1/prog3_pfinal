@@ -29,8 +29,6 @@ class Migration(migrations.Migration):
                 ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
                 ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
-                ('tac', models.BooleanField(default=False)),
-                ('security_level', models.IntegerField(default=0)),
                 ('groups', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', verbose_name='groups')),
                 ('user_permissions', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Permission', blank=True, help_text='Specific permissions for this user.', verbose_name='user permissions')),
             ],
@@ -44,9 +42,16 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='ERegistro',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('creado', models.DateField(auto_now_add=True)),
+            ],
+        ),
+        migrations.CreateModel(
             name='Estudiantes',
             fields=[
-                ('carnet', models.IntegerField(serialize=False, primary_key=True)),
+                ('carnet', models.CharField(max_length=10, serialize=False, primary_key=True)),
                 ('nombre', models.CharField(max_length=50)),
                 ('apellido', models.CharField(max_length=50)),
                 ('email', models.EmailField(max_length=254)),
@@ -66,6 +71,8 @@ class Migration(migrations.Migration):
             name='GruposEstudiantes',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('estudiante', models.ForeignKey(to='pfinalapi.Estudiantes')),
+                ('grupoid', models.OneToOneField(to='pfinalapi.Grupos')),
             ],
         ),
         migrations.CreateModel(
@@ -143,11 +150,11 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='ERegistro',
+            name='UserProfile',
             fields=[
-                ('estudiante', models.OneToOneField(primary_key=True, serialize=False, to='pfinalapi.Estudiantes')),
-                ('creado', models.DateField(auto_now_add=True)),
-                ('usuario', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('carnet', models.CharField(max_length=10)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
@@ -171,16 +178,6 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(to='pfinalapi.Intervalos'),
         ),
         migrations.AddField(
-            model_name='gruposestudiantes',
-            name='estudiante',
-            field=models.ForeignKey(to='pfinalapi.Estudiantes'),
-        ),
-        migrations.AddField(
-            model_name='gruposestudiantes',
-            name='grupoid',
-            field=models.OneToOneField(to='pfinalapi.Grupos'),
-        ),
-        migrations.AddField(
             model_name='grupos',
             name='horario',
             field=models.ForeignKey(to='pfinalapi.Horarios'),
@@ -189,5 +186,15 @@ class Migration(migrations.Migration):
             model_name='grupos',
             name='salon',
             field=models.ForeignKey(to='pfinalapi.Salones'),
+        ),
+        migrations.AddField(
+            model_name='eregistro',
+            name='estudiante',
+            field=models.OneToOneField(to='pfinalapi.Estudiantes'),
+        ),
+        migrations.AddField(
+            model_name='eregistro',
+            name='usuario',
+            field=models.OneToOneField(to=settings.AUTH_USER_MODEL),
         ),
     ]
