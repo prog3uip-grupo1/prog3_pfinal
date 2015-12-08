@@ -4,8 +4,16 @@ from kivy.uix.label import Label
 
 def showmessagebox(Titulo, Mensaje):
     """Inicializa la clase con el nombre del archivo a utilizar"""
-    popup = Popup(title=Titulo, content=Label(text=Mensaje), auto_dismiss=True, size_hint=(None, None), size=(400, 200))
+    popup = Popup(title=Titulo, content=Label(text=Mensaje), auto_dismiss=False, size_hint=(None, None), size=(400, 200))
     popup.open()
+
+
+class AppMiscError(RuntimeError):
+
+    def __init__(self, title, message):
+        self.title = title
+        self.message = message
+        self.args = [title, message]
 
 
 class PGDatos(object):

@@ -11,3 +11,8 @@ Como temas para el proyecto se estan considerando las siguientes opciones
 
     1. Boton de panico en el dispositivo que al utilizarze se envie una alerta por diversos medios
     2. Sistema de calendario y de agenda electronica para los estudiantes
+    
+## Integrantes:
+        
+        Julio Lerma
+        Rodrigo Vergara

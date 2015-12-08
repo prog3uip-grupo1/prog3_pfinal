@@ -84,3 +84,82 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
+<LabelPopup>:
+    pos_hint: {'center_y':(.5)}
+    size_hint_y: 1
+    text_size: self.width, None
+    height: self.texture_size[1]
+    padding: self.height * .2, self.height * .2
+
+<LabelSPopup>:
+    padding: self.height * .15, self.height * .15
+
+<LabelProyecto>:
+    width: self.width
+    height: self.height
+    text_size: self.size
+    halign: 'left'
+    valign: 'middle'
+    markup: True
+    padding: self.height * .2, self.height * .2
+    canvas.before:
+        Color:
+            rgb: self.bgcolor
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+<DropParcial>:
+    size_hint: self.size_hint
+    pos_hint: self.pos_hint
+    background_color: 1, 1, 1, 1
+    background_normal: ''
+    color: 0, 0, 0, 1
+    text_size: self.size
+    halign: 'left'
+    valign: 'middle'
+    padding: self.height * .15, self.height * .15
+
+<ButtonDropDown>:
+    background_color: 1, .7, 0, 1
+    background_normal: ''
+    color: 0,0,0,1
+    text_size: self.size
+    halign: 'left'
+    valign: 'middle'
+    padding: self.height * .15, self.height * .15
+    canvas.after:
+        Color:
+            rgb: 0,0,0
+        Line:
+            rectangle: self.x,self.y,self.width-1,self.height-1
+            width: 1
+
+<PopupParcial>:
+    background: 'data/fondo.png'
+    title_color: 0, 0, 0, 1
+    title_size: '16dp'
+    separator_color: 0, 0, 0
+    separator_height: '4dp'
+
+<PopupContent>:
+    mensaje: mensaje
+    FloatLayout:
+        size_hint: .2, .7
+        pos_hint:{'x':0, 'center_y':.5}
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1,1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        canvas:
+            Rectangle
+                size: self.size
+                pos: self.pos
+                source: 'data/taxi.jpg'
+    LabelSPopup:
+        id: mensaje
+        size_hint: .788, 1
+        pos_hint:{'x':.211, 'y':0}

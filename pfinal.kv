@@ -1,5 +1,90 @@
 <MainWindow>:
-    gridTest: grid1
     size: root.size
-    GridProyecto:
-        id: grid1
+    manager: manager
+#    status: result
+    ActionBar:
+        id: _action
+        size_hint: 1,.09
+        pos_hint: {'top':1}
+        ActionView:
+            background_color: [.0509, .4275, .7137, 1]
+            background_image: ''
+            use_separator: True
+            ActionPrevious:
+                title: 'Horario Estudiantil'
+                bold: True
+                font_size: self.height * .5
+                color: 1, 1, 1, 1
+                app_icon: 'data/horarios.png'
+                with_previous: False
+                on_release: root.manager.current = root.manager.previous()
+            ActionGroup:
+                text: 'File'
+                mode: 'spinner'
+                size_hint_x: None
+                width: 90
+                ActionButton:
+                    text: 'New'
+                ActionButton:
+                    text: 'Open'
+                ActionButton:
+                    text: 'Save'
+                ActionButton:
+                    text: 'Save As'
+                ActionButton:
+                    text: 'Quit'
+    ScreenManager:
+        id: manager
+        top: -51
+        canvas.before:
+            Color:
+                rgb: 0.1, 0.1, 0.1
+            Rectangle
+                size: self.size
+        Screen:
+            name: 'Login Form'
+            FloatLayout
+                canvas.before:
+                    Color:
+                        rgb: 1, 1, 1
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                BoxLayout
+                    orientation: 'vertical'
+                    size_hint: None,None
+                    height: 120
+                    width: 250
+                    spacing: 1
+                    top: root.height / 2 + ((self.height / 2) + _action.height)
+                    right: (root.width / 2) + (self.width / 2)
+                    LabelProyecto:
+                        texto: 'Login Form'
+                        textcolor: '000000'
+                        bgcolor: .5, .5, .5
+                    BoxLayout
+                        orientation: 'horizontal'
+                        LabelProyecto:
+                            texto: "Username"
+                        TextInput:
+                            multiline: False
+                            id: username
+                    BoxLayout
+                        orientation: 'horizontal'
+                        LabelProyecto:
+                            texto: "Password"
+                        TextInput:
+                            multiline: False
+                            password: True
+                            id: password
+                    Button:
+                        text: "Login"
+#                   on_press:root.validate(username.text,password.text)
+        Screen:
+            name: 'Screen 2'
+            FloatLayout:
+                Label:
+                    text: 'Screen 2'
+
+
+
