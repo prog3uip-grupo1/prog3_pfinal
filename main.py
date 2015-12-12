@@ -28,16 +28,17 @@ class MainWindow(FloatLayout):
     texto = StringProperty("Proyecto Final Test")
 
     def __init__(self):
-        try:
+        #try:
 
-            FloatLayout.__init__(self)
-            self.ldatos.conectar()
-            self.getappsettings()
+        FloatLayout.__init__(self)
+        self.ldatos.conectar()
+        self.getappsettings()
 
 #            if not self.__is_sync:
 #                self.showloginform()
 
-            datos_api = SQLData(self.__django_api)
+        datos_api = SQLData(self.__django_api)
+        print (datos_api)
             # self.gridTest.addcolumna("Carnet", "txt", "left", 50, False, 'carnet')
             # self.gridTest.addcolumna("Usuario", "key", "center", 90, False, 'username')
             # self.gridTest.addcolumna("Nombre", "txt", "left", 150, False, 'first_name')
@@ -47,8 +48,8 @@ class MainWindow(FloatLayout):
             # self.gridTest.addheaders()
             # self.gridTest.datasource = self.datos
 #        self.gridTest.addgridrow([True, "1", "Articulo 1", "10", False])
-        except AppMiscError as exp:
-            showmessagebox(exp.title, exp.message)
+        #except AppMiscError as exp:
+        #showmessagebox("hola", "mundo")
 
     def getappsettings(self):
         settings = self.ldatos.getdbsettings()
