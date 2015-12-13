@@ -1,3 +1,34 @@
+<LoginForm>:
+    BoxLayout
+        orientation: 'vertical'
+        size_hint: None,None
+        height: 120
+        width: 250
+        spacing: 1
+        top: root.height / 2 + ((self.height / 2) + _action.height)
+        right: (root.width / 2) + (self.width / 2)
+        LabelProyecto:
+            texto: 'Login Form'
+            textcolor: '000000'
+            bgcolor: .5, .5, .5
+        BoxLayout
+            orientation: 'horizontal'
+            LabelProyecto:
+                texto: "Username"
+            TextBoxProyecto:
+                id: username
+        BoxLayout
+            orientation: 'horizontal'
+            LabelProyecto:
+                texto: "Password"
+            TextBoxProyecto:
+                is_password: True
+                id: password
+        Button:
+            text: "Login"
+#                   on_press:root.validate(username.text,password.text)
+
+
 <MainWindow>:
     size: root.size
     manager: manager
@@ -41,8 +72,9 @@
                 rgb: 0.1, 0.1, 0.1
             Rectangle
                 size: self.size
+                pos: self.pos
         Screen:
-            name: 'Login Form'
+            name: 'login'
             FloatLayout
                 canvas.before:
                     Color:
@@ -50,38 +82,20 @@
                     Rectangle:
                         size: self.size
                         pos: self.pos
-                BoxLayout
-                    orientation: 'vertical'
-                    size_hint: None,None
-                    height: 120
-                    width: 250
-                    spacing: 1
-                    top: root.height / 2 + ((self.height / 2) + _action.height)
-                    right: (root.width / 2) + (self.width / 2)
-                    LabelProyecto:
-                        texto: 'Login Form'
-                        textcolor: '000000'
-                        bgcolor: .5, .5, .5
-                    BoxLayout
-                        orientation: 'horizontal'
-                        LabelProyecto:
-                            texto: "Username"
-                        TextInput:
-                            multiline: False
-                            id: username
-                    BoxLayout
-                        orientation: 'horizontal'
-                        LabelProyecto:
-                            texto: "Password"
-                        TextInput:
-                            multiline: False
-                            password: True
-                            id: password
-                    Button:
-                        text: "Login"
-#                   on_press:root.validate(username.text,password.text)
+                VentanaProyecto:
+                    title: 'Iniciar sesion'
+                    titlecolor: 'FFFFFF'
+                    titlebackcolor: [.0509, .4275, .7137]
+                    size_hint: .8, .4
+                    pos_hint: {'center':(.5, .5)}
+                    bordercolor: [0,0,0]
+                    backcolor: [.8, .8, .8]
+                    borde: 1
+
+
+
         Screen:
-            name: 'Screen 2'
+            name: ''
             FloatLayout:
                 Label:
                     text: 'Screen 2'

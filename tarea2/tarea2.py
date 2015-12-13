@@ -1,12 +1,16 @@
+import re
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
 from kivy.uix.popup import Popup
+from kivy.graphics import Line, Rectangle, Color
 from kivy.properties import StringProperty, NumericProperty, ListProperty, BooleanProperty, ObjectProperty
 from putils import PGDatos
 from api_client.sqldata import SQLData
+
 
 
 class GridField(object):
@@ -219,6 +223,7 @@ class LabelPopup(Label):
     __textocolor = StringProperty('FFFFFF')
     __bordercolor = ListProperty([])
     __backcolor = ListProperty([])
+    __borderwidth = NumericProperty(1)
 
     def __init__(self, **kwargs):
         """
@@ -229,6 +234,12 @@ class LabelPopup(Label):
             self.texto = kwargs['texto']
         if 'textocolor' in kwargs:
             self.textocolor = kwargs['textocolor']
+        if 'backcolor' in kwargs:
+            self.backcolor = kwargs['backcolor']
+        if 'bordercolor' in kwargs:
+            self.bordercolor = kwargs['bordercolor']
+        if 'borde' in kwargs:
+            self.borde = kwargs['borde']
 
         self.line = ObjectProperty(None)
         self.linecolor = ObjectProperty(None)
@@ -263,6 +274,24 @@ class LabelPopup(Label):
         self.__textocolor = value
 
     @property
+    def borde(self):
+        """
+            Propiedad bordercolor: contiene el color del borde en formato RGB Dec list
+        """
+        return self.__borderwidth
+
+    @borde.setter
+    def borde(self, value):
+        with self.canvas.after:
+            self.canvas.after.clear()
+            self.linecolor = Color(self.__bordercolor)
+            self.line = Line(rectangle=[self.x + self.__borderwidth, self.y + self.__borderwidth, self.width - self.__borderwidth * 2, self.height - self.__borderwidth * 2], width=value)
+        self.__borderwidth = value
+
+        self.bind(pos=self.update_canvas, size=self.update_canvas)
+
+
+    @property
     def bordercolor(self):
         """
             Propiedad bordercolor: contiene el color del borde en formato RGB Dec list
@@ -272,8 +301,9 @@ class LabelPopup(Label):
     @bordercolor.setter
     def bordercolor(self, value):
         with self.canvas.after:
+            self.canvas.after.clear()
             self.linecolor = Color(value)
-            self.line = Line(rectangle=[self.x, self.y, self.width-1, self.height-6], width=2)
+            self.line = Line(rectangle=[self.x, self.y, self.width-1, self.height-6], width=self.__borderwidth)
         self.__bordercolor = value
 
         self.bind(pos=self.update_canvas, size=self.update_canvas)
@@ -288,8 +318,9 @@ class LabelPopup(Label):
     @backcolor.setter
     def backcolor(self, value):
         with self.canvas.before:
+            self.canvas.before.clear()
             self.fondocolor = Color(value)
-            self.fondo = Rectangle(pos=[self.x, self.y], size=[self.width-1, self.height-6])
+            self.fondo = Rectangle(pos=[self.x, self.y], size=[self.width, self.height])
         self.__backcolor = value
 
         self.bind(pos=self.update_canvas, size=self.update_canvas)
@@ -300,11 +331,11 @@ class LabelPopup(Label):
         """
         if len(self.bordercolor) > 0:
             self.linecolor.rgb = self.bordercolor
-            self.line.rectangle = [self.x, self.y, self.width-1, self.height-6]
+            self.line.rectangle = [self.x, self.y, self.width, self.height]
         if len(self.backcolor) > 0:
             self.fondocolor.rgb = self.backcolor
             self.fondo.pos = self.pos
-            self.fondo.size = [self.width-1, self.height-6]
+            self.fondo.size = [self.width, self.height]
 
 
     def textocolorrgb(self, value):
@@ -448,3 +479,222 @@ class DropParcial(Button):
         if touch.grab_current == self:
             self.drop_down.open(self)
         return super(DropParcial, self).on_touch_up(touch)
+
+
+class TextBoxProyecto(TextInput):
+    """Clase derivada de TextInput para Insertar datos alfanumericos en mayuscula con espacios"""
+    __is_numeric = BooleanProperty(False)
+    __is_upper_case = BooleanProperty(False)
+    __is_lower_case = BooleanProperty(False)
+    __accept_spaces = BooleanProperty(True)
+    __is_password = BooleanProperty(False)
+
+    __pattern = '[^a-zA-Z0-9_ ]'
+
+    def __init__(self, **kwargs):
+        super(TextBoxProyecto, self).__init__(**kwargs)
+
+    @property
+    def is_password(self):
+        return self.__is_password
+
+    @is_password.setter
+    def is_password(self, value):
+        if value:
+            self.__pattern = '[ ]'
+        elif self.__is_numeric:
+            self.__pattern = '[^0-9]'
+        elif self.__accept_spaces:
+            self.__pattern = '[^a-zA-Z0-9_ ]'
+        else:
+            self.__pattern = '[^a-zA-Z0-9_]'
+
+        self.password = value
+        self.__is_password = value
+
+    @property
+    def is_numeric(self):
+        return self.__is_numeric
+
+    @is_numeric.setter
+    def is_numeric(self, value):
+        if self.__is_password:
+            self.__pattern = '[ ]'
+            self.__accept_spaces = False
+        elif value:
+            self.__pattern = '[^0-9]'
+            self.__accept_spaces = False
+        elif self.__accept_spaces:
+            self.__pattern = '[^a-zA-Z0-9_ ]'
+        else:
+            self.__pattern = '[^a-zA-Z0-9_]'
+        self.__is_numeric = value
+
+    @property
+    def is_upper_case(self):
+        return self.__is_upper_case
+
+    @is_upper_case.setter
+    def is_upper_case(self, value):
+        self.__is_upper_case = value
+
+    @property
+    def is_lower_case(self):
+        return self.__is_lower_case
+
+    @is_lower_case.setter
+    def is_lower_case(self, value):
+        self.__is_lower_case = value
+
+    @property
+    def accept_spaces(self):
+        return self.__accept_spaces
+
+    @accept_spaces.setter
+    def accept_spaces(self, value):
+        if self.__is_password:
+            self.__pattern = '[ ]'
+            value = False
+        elif self.__is_numeric:
+            self.__pattern = '[^0-9]'
+            value = False
+        elif value:
+            self.__pattern = '[^a-zA-Z0-9_ ]'
+        else:
+            self.__pattern = '[^a-zA-Z0-9_]'
+        self.__is_numeric = value
+        self.__accept_spaces = value
+
+    def insert_text(self, substring, from_undo=False):
+        """Reemplaza la funcion inicial y filtra los caracteres y los convierte en mayuscula"""
+        pat = re.compile(self.__pattern)
+        s = re.sub(pat, '', substring)
+        if self.__is_upper_case and not self.__is_password:
+            s = s.upper()
+        elif self.__is_lower_case and not self.__is_password:
+            s = s.lower()
+        return super(TextBoxProyecto, self).insert_text(s, from_undo=from_undo)
+
+
+class VentanaProyecto(FloatLayout):
+    __bordercolor = ListProperty([])
+    __backcolor = ListProperty([])
+    __borderwidth = NumericProperty(1)
+
+    otitle = ObjectProperty(None)
+    obody = ObjectProperty(None)
+
+    children = ListProperty([])
+
+    def __init__(self, **kwargs):
+        if 'title' in kwargs:
+            self.title = kwargs['title']
+        if 'backcolor' in kwargs:
+            self.backcolor = kwargs['backcolor']
+        if 'bordercolor' in kwargs:
+            self.bordercolor = kwargs['bordercolor']
+        if 'borde' in kwargs:
+            self.borde = kwargs['borde']
+
+        self.line = ObjectProperty(None)
+        self.linecolor = ObjectProperty(None)
+        self.fondo = ObjectProperty(None)
+        self.fondocolor = ObjectProperty(None)
+
+        super(VentanaProyecto,self).__init__(**kwargs)
+
+    @property
+    def title(self):
+        return self.otitle.texto
+
+    @title.setter
+    def title(self, value):
+        self.otitle.texto = value
+
+    @property
+    def titlecolor(self):
+        return self.otitle.textocolor
+
+    @titlecolor.setter
+    def titlecolor(self, value):
+        self.otitle.textocolor = value
+
+    @property
+    def titlebackcolor(self):
+        return self.otitle.backcolor
+
+    @titlebackcolor.setter
+    def titlebackcolor(self, value):
+        self.otitle.backcolor = value
+
+    @property
+    def body(self):
+        return self.obody
+
+    @body.setter
+    def body(self, value):
+        self.obody.clear_widgets(children=None)
+        self.obody.add_widget(value)
+
+    @property
+    def bordercolor(self):
+        """
+            Propiedad bordercolor: contiene el color del borde en formato RGB Dec list
+        """
+        return self.__bordercolor
+
+    @bordercolor.setter
+    def bordercolor(self, value):
+        with self.body.canvas.after:
+            self.body.canvas.after.clear()
+            self.linecolor = Color(value)
+            self.line = Line(rectangle=[self.body.x + self.__borderwidth, self.body.y + self.__borderwidth, self.body.width - self.__borderwidth * 2, self.body.height - self.__borderwidth * 2], width=self.__borderwidth)
+        self.__bordercolor = value
+
+        self.body.bind(pos=self.update_canvas, size=self.update_canvas)
+
+    @property
+    def borde(self):
+        """
+            Propiedad bordercolor: contiene el color del borde en formato RGB Dec list
+        """
+        return self.__borderwidth
+
+    @borde.setter
+    def borde(self, value):
+        with self.body.canvas.after:
+            self.body.canvas.after.clear()
+            self.linecolor = Color(self.__bordercolor)
+            self.line = Line(rectangle=[self.body.x + self.__borderwidth, self.body.y + self.__borderwidth, self.body.width - self.__borderwidth * 2, self.body.height - self.__borderwidth * 2], width=value)
+        self.__borderwidth = value
+
+        self.body.bind(pos=self.update_canvas, size=self.update_canvas)
+
+    @property
+    def backcolor(self):
+        """
+            Propiedad backcolor: contiene el color del fondo en formato RGB Dec List
+        """
+        return self.__backcolor
+
+    @backcolor.setter
+    def backcolor(self, value):
+        with self.body.canvas.before:
+            self.body.canvas.before.clear()
+            self.fondocolor = Color(value)
+            self.fondo = Rectangle(pos=[self.body.x, self.body.y], size=[self.body.width, self.body.height])
+        self.__backcolor = value
+
+        self.body.bind(pos=self.update_canvas, size=self.update_canvas)
+
+    def update_canvas(self, *args):
+        """
+            Actualiza el borde y el fondo de el objeto cada vez que cambie de tamanio o lugar
+        """
+        if len(self.bordercolor) > 0:
+            self.linecolor.rgb = self.bordercolor
+            self.line.rectangle = [self.body.x + self.__borderwidth, self.body.y + self.__borderwidth, self.body.width - self.__borderwidth * 2, self.body.height - self.__borderwidth * 2]
+        if len(self.backcolor) > 0:
+            self.fondocolor.rgb = self.backcolor
+            self.fondo.pos = self.body.pos
+            self.fondo.size = [self.body.width, self.body.height]

@@ -40,18 +40,13 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'rest_framework',
-    'rest_framework.authtoken',
-    'tarea3.pfinalapi',
-    'rest_auth',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'rest_auth.registration'
+    'tarea3.pfinalapi'
 )
 
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAdminUser',
+        'rest_framework.permissions.AllowAny',
     ),
     'PAGE_SIZE': 10
 }
@@ -85,11 +80,6 @@ TEMPLATES = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
-)
 
 WSGI_APPLICATION = 'tarea3.wsgi.application'
 
@@ -115,11 +105,6 @@ DATABASES = {
     }
 }
 
-ACCOUNT_SIGNUP_FORM_CLASS = 'tarea3.pfinalapi.forms.SignupForm'
-
-REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'tarea3.pfinalapi.serializers.UserSerializer'
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -139,8 +124,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-
-AUTH_USER_MODEL = 'pfinalapi.Usuarios'
 
 SITE_ID = 1
 

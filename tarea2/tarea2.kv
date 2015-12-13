@@ -1,3 +1,7 @@
+<TextBoxProyecto>:
+    multiline: False
+    write_tab: False
+
 <ScrollProyecto@ScrollView>:
     orientation: 'vertical'
     bar_width: '20dp'
@@ -163,3 +167,17 @@
         id: mensaje
         size_hint: .788, 1
         pos_hint:{'x':.211, 'y':0}
+
+<VentanaProyecto>:
+    otitle: ptitle
+    obody: pbody
+    LabelProyecto:
+        id: ptitle
+        size_hint: 1, .15
+        pos_hint: {'x':0, 'top': 1}
+        font_size: self.height * .65
+        bold: True
+    FloatLayout:
+        id: pbody
+        size_hint: 1, .85
+        pos_hint: {'x':0, 'top': .85}

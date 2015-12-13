@@ -34,8 +34,8 @@ class MainWindow(FloatLayout):
             self.ldatos.conectar()
             self.getappsettings()
 
-#            if not self.__is_sync:
-#                self.showloginform()
+            if not self.__is_sync:
+                self.showloginform()
 
             datos_api = SQLData(self.__django_api)
             # self.gridTest.addcolumna("Carnet", "txt", "left", 50, False, 'carnet')
@@ -57,6 +57,10 @@ class MainWindow(FloatLayout):
         self.__carnet_sync = settings[2]
         self.__django_api = settings[3]
 
+    def showloginform(self):
+        # popup = ui.LoginPopup(title='Login', auto_dismiss=True, size_hint=(.9, .3))
+        # popup.open()
+        pass
 
 
 class PFinalApp(App):
