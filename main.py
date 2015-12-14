@@ -1,8 +1,5 @@
 __version__ = "1.0"
-import tarea1.tarea1
 import tarea2.tarea2 as ui
-import tarea4.tarea4
-import tarea5.tarea5
 from api_client.sqldata import SQLData
 from kivy.app import App
 #from kivy.config import Config
@@ -47,8 +44,8 @@ class MainWindow(FloatLayout):
             self.datos_api = SQLData(self.__django_api)
             #self.__api_success = datos_api.testapi()
             self.horario_grid.addcolumna("Codigo", "txt", "left", .15, False, 'codigo')
-            self.horario_grid.addcolumna("Materia", "key", "center", .55, False, 'nombre')
-            self.horario_grid.addcolumna("Dia", "txt", "left", .05, False, 'dia')
+            self.horario_grid.addcolumna("Materia", "key", "center", .52, False, 'nombre')
+            self.horario_grid.addcolumna("Dia", "txt", "left", .08, False, 'dia')
             self.horario_grid.addcolumna("Hora", "txt", "left", .15, False, 'hora')
             self.horario_grid.addcolumna("Aula", "txt", "left", .1, False, 'aula')
             self.horario_grid.addheaders()

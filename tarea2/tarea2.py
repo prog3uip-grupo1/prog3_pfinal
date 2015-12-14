@@ -12,201 +12,6 @@ from putils import PGDatos
 from api_client.sqldata import SQLData
 
 
-
-class GridField(object):
-
-    def __init__(self, fldheader="", fldtype="", fldalign="", flddisabled=False, fldwidth=100, flddata=''):
-        self.fldHeader = fldheader
-        self.fldType = fldtype
-        self.fldAlign = fldalign
-        self.fldDisabled = flddisabled
-        self.fldWidth = fldwidth
-        self.fldData = flddata
-        self.fldCol = -1
-
-
-class GridFields(object):
-    __fields = []
-    __key = -1
-    __columns = 0
-
-    @property
-    def columns(self):
-        return self.__columns
-
-    @property
-    def key(self):
-        return self.__key
-
-    def add(self, field):
-        if field.fldCol == -1:
-            field.fldCol = self.__columns
-        if field.fldType == "key":
-            self.__key = self.__columns
-        self.__fields.append(field)
-        self.__columns += 1
-
-    def getkey(self):
-        return self.__fields[self.__key]
-
-    def getfield(self, col):
-        return self.__fields[col]
-
-
-class GridProyecto(FloatLayout):
-    """Inicializa la clase derivada de GridLayout para el manejo de grids"""
-    gHeader = GridLayout
-    gBody = GridLayout
-    rHeight = NumericProperty(30)
-    columnas = NumericProperty()
-    filas = NumericProperty()
-    gfields = GridFields()
-    __datasource = SQLData
-    __rows = PGDatos()
-
-    @property
-    def datasource(self):
-        return self.__rows
-
-    @datasource.setter
-    def datasource(self, value):
-        self.__datasource = value
-        self.delGridRow()
-        for rowdic in self.__datasource:
-            datarow = []
-            for col in range(self.gfields.columns):
-                datarow.append(rowdic[self.gfields.getfield(col).fldCol])
-            self.addgridrow(datarow)
-
-    def addcolumna(self, colheader, rowtype="txt", rowalign="center", colsize=200, coldisable=False, datafield=''):
-        """Agrega una columna al grid"""
-        self.gfields.add(GridField(fldheader=colheader, fldtype=rowtype, fldalign=rowalign, flddisabled=coldisable,
-                                   fldwidth=colsize, flddata=datafield))
-        self.columnas = self.gfields.columns
-
-    def addheaders(self):
-        """Funcion que crea todas las celdas para utilizarse como encabezado de los grids"""
-        gHdr = self.gHeader
-        self.filas += 1
-        for col in range(self.columnas):
-            hdr = GridHeader()
-            hdr.id = "hdr_col{0}".format(col)
-            hdr.size_hint_x = self.gfields.getfield(col).fldWidth
-            hdr.padding = [5, 5]
-            hdr.text = '[color=ffffff][b][size=16]{0}[/size][/b][/color]'.format(self.gfields.getfield(col).fldHeader)
-            hdr.halign = 'center'
-            hdr.valign = 'middle'
-            hdr.markup = True
-            hdr.bgcolor= [.0509, .4275, .7137]
-#            hdr.text_size = hdr.size
-            gHdr.add_widget(hdr)
-
-    def addgridrow(self, rowdata):
-        """Funcion que agrega todas las celdas por cada fila de un grid de datos"""
-        gBdy = self.gBody
-        gBdy.bind(minimum_height=gBdy.setter('height'), minimum_width=gBdy.setter('width'))
-        self.filas += 1
-        for col in range(self.columnas):
-            if self.gfields.getfield(col).fldType == "txt" or self.gfields.getfield(col).fldType == "key":
-                gBdy.add_widget(self.getcelllabel(self.filas, col, rowdata[col], self.gfields.getfield(col).fldAlign,
-                                                  self.gfields.getfield(col).fldDisabled,
-                                                  self.gfields.getfield(col).fldWidth,
-                                                  self.gfields.getfield(col).fldType))
-            else:
-                gBdy.add_widget(self.getcellchk(self.filas, col, rowdata[col], self.gfields.getfield(col).fldDisabled,
-                                                self.gfields.getfield(col).fldWidth,
-                                                self.gfields.getfield(col).fldType))
-        self.__rows.addrow(rowdata[self.gfields.key], rowdata[:self.gfields.key] + rowdata[(self.gfields.key + 1):])
-
-    def getcellchk(self, fila, columna, Activo, Disabled = False, Size=200.0, Tipo="chk"):
-        """Funcion que devuelve una celda completa para manejo de checkbox"""
-        cell = GridCCell()
-        cell.id = "{0}_row{1}_col{2}".format(Tipo, fila, columna)
-        cell.size_hint_x = Size
-        #cell.width = Size
-        cell.active = Activo
-        cell.disabled = Disabled
-        cell.background_checkbox_disabled_down = 'atlas://data/images/defaulttheme/checkbox_on'
-        cell.text_size = cell.size
-        if Tipo == "bor":
-            cell.bind(active=self.borradoclick)
-        return cell
-
-    def getcelllabel(self, fila, columna, Texto, Halign='left', Disabled = False, Size=200.0, Tipo="txt", Valign='middle'):
-        """Funcion que devuelve una celda completa para manejo de etiquitas"""
-        cell = GridCell()
-        cell.id = "{0}_row{0}_col{1}".format(Tipo, fila, columna)
-        if Tipo == "key":
-            cell.key = str(Texto)
-        cell.size_hint_x = Size
-        #cell.width = Size
-        cell.padding = [5,5]
-        cell.text = '[color=000000]{0}[/color]'.format(Texto)
-        cell.halign = Halign
-        cell.valign = Valign
-        cell.disabled = Disabled
-        cell.markup = True
-        #cell.text_size = cell.size
-        return cell
-
-    def borradoclick(self, cell, value):
-        """Funcion que marca las celdas para el borrado"""
-        cell.borrado = cell.active
-        count = 1
-        for cella in cell.walk_reverse(loopback=False):
-            if cella.id[4:7] == 'row':
-                cella.borrado = cell.active
-                count += 1
-            if count >= self.columnas:
-                break
-
-    def delGridRow(self, range = "All"):
-        """funcion para borrar celdas de un grid"""
-        childs = self.gBody.parent.children
-        for ch in childs:
-            for c in reversed(ch.children):
-                if range == "All" or c.borrado:
-                    if range != "All" and c.id == "key":
-                        self._rows.delrow(c.key)
-                    self.gBody.remove_widget(c)
-
-
-class GridHeader(Label):
-    """Inicializa la clase derivada de BoxLayout como base del encabezado de los grids"""
-    height = NumericProperty(40)
-    bgcolor = ListProperty([0.4, 0.4, 0.4])
-
-
-class GridCell(Label):
-    """Inicializa la clase derivada de BoxLayout como base de las celdas de datos del grid"""
-    key = StringProperty("")
-    borrado = BooleanProperty(False)
-    height = NumericProperty(30)
-    bgcolor = ListProperty([0.7, 0.7, 0.7])
-
-
-class GridCCell(CheckBox):
-    """Inicializa la clase derivada de BoxLayout como base de las celdas de datos del grid"""
-    key = StringProperty("")
-    borrado = BooleanProperty(False)
-    height = NumericProperty(30)
-    bgcolor = ListProperty([0.7, 0.7, 0.7])
-
-
-def convertorgb(color):
-    """
-        Funcion que convierte de codigo de colores de Hex a RGB decimal
-    """
-    __tmplist = []
-    if len(color) == 6:
-        __tmplist.append(float(int(color[0:2], 16)) / 255.0)
-        __tmplist.append(float(int(color[2:4], 16)) / 255.0)
-        __tmplist.append(float(int(color[4:6], 16)) / 255.0)
-        return __tmplist
-    else:
-        return [0, 0, 0]
-
-
 class LabelPopup(Label):
     """
         Objeto de texto principal de la aplicacion, permite modificar el color de fondo, color de texto
@@ -338,6 +143,233 @@ class LabelPopup(Label):
         return convertorgb(value)
 
 
+
+class LabelProyecto(LabelPopup):
+    """
+        Texto derivado de LabelPopup para el uso del resto de la aplicacion
+    """
+    bgcolor = ListProperty([0, 0, 0])
+
+
+class GridField(object):
+
+    def __init__(self, fldheader="", fldtype="", fldalign="", flddisabled=False, fldwidth=100, flddata=''):
+        self.fldHeader = fldheader
+        self.fldType = fldtype
+        self.fldAlign = fldalign
+        self.fldDisabled = flddisabled
+        self.fldWidth = fldwidth
+        self.fldData = flddata
+        self.fldCol = -1
+
+
+class GridFields(object):
+    __fields = []
+    __key = -1
+    __columns = 0
+
+    @property
+    def columns(self):
+        return self.__columns
+
+    @property
+    def key(self):
+        return self.__key
+
+    def add(self, field):
+        if field.fldCol == -1:
+            field.fldCol = self.__columns
+        if field.fldType == "key":
+            self.__key = self.__columns
+        self.__fields.append(field)
+        self.__columns += 1
+
+    def getkey(self):
+        return self.__fields[self.__key]
+
+    def getfield(self, col):
+        return self.__fields[col]
+
+
+class GridProyecto(FloatLayout):
+    """Inicializa la clase derivada de GridLayout para el manejo de grids"""
+    gHeader = GridLayout
+    gBody = GridLayout
+    #rHeight = NumericProperty(30)
+    columnas = NumericProperty()
+    filas = NumericProperty()
+    gfields = GridFields()
+    __datasource = SQLData
+    __rows = PGDatos()
+    __rheight = NumericProperty(30)
+    __gcells = ListProperty([])
+    __ghdrs = ListProperty([])
+
+    @property
+    def rHeight(self):
+        return self.__rheight
+
+    @rHeight.setter
+    def rHeight(self, value):
+        self.__rheight = value
+        self.bind(pos=self.updaterheight, size=self.updaterheight)
+
+    def updaterheight(self, *args):
+        #self.gHeader.height = self.height * .1
+        self.gHeader.row_default_height = self.height * .1
+        self.gBody.row_default_height = self.height * .1
+        for cell in self.__gcells:
+            cell.font_size = self.rHeight * .37
+        for hdrs in self.__ghdrs:
+            hdrs.font_size = self.rHeight * .37
+
+    @property
+    def datasource(self):
+        return self.__rows
+
+    @datasource.setter
+    def datasource(self, value):
+        self.__datasource = value
+        self.delGridRow()
+        for rowdic in self.__datasource:
+            datarow = []
+            for col in range(self.gfields.columns):
+                datarow.append(rowdic[self.gfields.getfield(col).fldCol])
+            self.addgridrow(datarow)
+
+    def addcolumna(self, colheader, rowtype="txt", rowalign="center", colsize=200, coldisable=False, datafield=''):
+        """Agrega una columna al grid"""
+        self.gfields.add(GridField(fldheader=colheader, fldtype=rowtype, fldalign=rowalign, flddisabled=coldisable,
+                                   fldwidth=colsize, flddata=datafield))
+        self.columnas = self.gfields.columns
+
+    def addheaders(self):
+        """Funcion que crea todas las celdas para utilizarse como encabezado de los grids"""
+        gHdr = self.gHeader
+        self.filas += 1
+        for col in range(self.columnas):
+            hdr = GridHeader()
+            hdr.id = "hdr_col{0}".format(col)
+            hdr.size_hint_x = self.gfields.getfield(col).fldWidth
+            hdr.padding = [5, 5]
+            hdr.text = '[color=ffffff][b]{0}[/b][/color]'.format(self.gfields.getfield(col).fldHeader)
+            hdr.halign = 'center'
+            hdr.valign = 'middle'
+            hdr.markup = True
+            hdr.bgcolor= [.0509, .4275, .7137]
+            #hdr.text_size = hdr.size
+            self.__ghdrs.append(hdr)
+            gHdr.add_widget(hdr)
+
+    def addgridrow(self, rowdata):
+        """Funcion que agrega todas las celdas por cada fila de un grid de datos"""
+        gBdy = self.gBody
+        gBdy.bind(minimum_height=gBdy.setter('height'), minimum_width=gBdy.setter('width'))
+        self.filas += 1
+        for col in range(self.columnas):
+            if self.gfields.getfield(col).fldType == "txt" or self.gfields.getfield(col).fldType == "key":
+                gBdy.add_widget(self.getcelllabel(self.filas, col, rowdata[col], self.gfields.getfield(col).fldAlign,
+                                                  self.gfields.getfield(col).fldDisabled,
+                                                  self.gfields.getfield(col).fldWidth,
+                                                  self.gfields.getfield(col).fldType))
+            else:
+                gBdy.add_widget(self.getcellchk(self.filas, col, rowdata[col], self.gfields.getfield(col).fldDisabled,
+                                                self.gfields.getfield(col).fldWidth,
+                                                self.gfields.getfield(col).fldType))
+        self.__rows.addrow(rowdata[self.gfields.key], rowdata[:self.gfields.key] + rowdata[(self.gfields.key + 1):])
+
+    def getcellchk(self, fila, columna, Activo, Disabled = False, Size=200.0, Tipo="chk"):
+        """Funcion que devuelve una celda completa para manejo de checkbox"""
+        cell = GridCCell()
+        cell.id = "{0}_row{1}_col{2}".format(Tipo, fila, columna)
+        cell.size_hint_x = Size
+        #cell.width = Size
+        cell.active = Activo
+        cell.disabled = Disabled
+        cell.background_checkbox_disabled_down = 'atlas://data/images/defaulttheme/checkbox_on'
+        cell.text_size = cell.size
+        if Tipo == "bor":
+            cell.bind(active=self.borradoclick)
+        return cell
+
+    def getcelllabel(self, fila, columna, Texto, Halign='left', Disabled = False, Size=200.0, Tipo="txt", Valign='middle'):
+        """Funcion que devuelve una celda completa para manejo de etiquitas"""
+        cell = GridCell()
+        cell.id = "{0}_row{0}_col{1}".format(Tipo, fila, columna)
+        if Tipo == "key":
+            cell.key = str(Texto)
+        cell.size_hint_x = Size
+        #cell.width = Size
+        cell.padding = [5,5]
+        cell.text = '[color=000000]{0}[/color]'.format(Texto)
+        cell.halign = Halign
+        cell.valign = Valign
+        cell.disabled = Disabled
+        cell.markup = True
+        self.__gcells.append(cell)
+        #cell.text_size = cell.size
+        return cell
+
+    def borradoclick(self, cell, value):
+        """Funcion que marca las celdas para el borrado"""
+        cell.borrado = cell.active
+        count = 1
+        for cella in cell.walk_reverse(loopback=False):
+            if cella.id[4:7] == 'row':
+                cella.borrado = cell.active
+                count += 1
+            if count >= self.columnas:
+                break
+
+    def delGridRow(self, range = "All"):
+        """funcion para borrar celdas de un grid"""
+        childs = self.gBody.parent.children
+        for ch in childs:
+            for c in reversed(ch.children):
+                if range == "All" or c.borrado:
+                    if range != "All" and c.id == "key":
+                        self._rows.delrow(c.key)
+                    self.gBody.remove_widget(c)
+
+
+class GridHeader(LabelProyecto):
+    """Inicializa la clase derivada de BoxLayout como base del encabezado de los grids"""
+    height = NumericProperty(40)
+    bgcolor = ListProperty([0.4, 0.4, 0.4])
+
+
+class GridCell(Label):
+    """Inicializa la clase derivada de BoxLayout como base de las celdas de datos del grid"""
+    key = StringProperty("")
+    borrado = BooleanProperty(False)
+    height = NumericProperty(30)
+    bgcolor = ListProperty([0.7, 0.7, 0.7])
+
+
+class GridCCell(CheckBox):
+    """Inicializa la clase derivada de BoxLayout como base de las celdas de datos del grid"""
+    key = StringProperty("")
+    borrado = BooleanProperty(False)
+    height = NumericProperty(30)
+    bgcolor = ListProperty([0.7, 0.7, 0.7])
+
+
+def convertorgb(color):
+    """
+        Funcion que convierte de codigo de colores de Hex a RGB decimal
+    """
+    __tmplist = []
+    if len(color) == 6:
+        __tmplist.append(float(int(color[0:2], 16)) / 255.0)
+        __tmplist.append(float(int(color[2:4], 16)) / 255.0)
+        __tmplist.append(float(int(color[4:6], 16)) / 255.0)
+        return __tmplist
+    else:
+        return [0, 0, 0]
+
+
+
+
 class LabelSPopup(LabelPopup):
     """
         Objeto derivado de LabelPopup
@@ -393,13 +425,6 @@ def showmessagebox(Titulo, Mensaje, Tipo=1):
         label = PopupContent(texto=Mensaje, textocolor='660000', backcolor=[1, .6, .6])
     popup = PopupParcial(title=Titulo, content=label, auto_dismiss=True, size_hint=(.9, .3))
     popup.open()
-
-
-class LabelProyecto(LabelPopup):
-    """
-        Texto derivado de LabelPopup para el uso del resto de la aplicacion
-    """
-    bgcolor = ListProperty([0, 0, 0])
 
 
 class ButtonDropDown(Button):

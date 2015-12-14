@@ -13,19 +13,20 @@
 <GridProyecto>:
     gHeader: gheader1
     gBody: gbody1
+    rHeight: self.height * .1
     GridLayout:
         id: gheader1
         cols: root.columnas
         spacing: 1
-        size_hint: 1, None
+        size_hint: 1, .1
         pos_hint: {'x': 0, 'top': 1}
-        height: root.rHeight
+        #height: root.rHeight
         row_default_height: root.rHeight
         row_force_default: False
 
     ScrollProyecto:
         size_hint: 1, None
-        height: root.height - (gheader1.height + 10)
+        height: root.height - (gheader1.height)
         pos_hint: {'x': 0, 'y': 0}
         GridLayout:
             id: gbody1
@@ -147,7 +148,7 @@
             Rectangle
                 size: self.size
                 pos: self.pos
-                source: 'data/horarios.png'
+                source: 'data/horarios.jpg'
     LabelSPopup:
         id: mensaje
         size_hint: .788, 1
