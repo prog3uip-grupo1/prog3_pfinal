@@ -1,3 +1,4 @@
+#: import sm kivy.uix.screenmanager
 <LoginForm>:
     BoxLayout
         orientation: 'vertical'
@@ -32,6 +33,14 @@
 <MainWindow>:
     size: root.size
     manager: manager
+    carnet_sync: carnet_sync
+    carnet_text: carnet_text
+    api_url: api_url
+    estudiante_form: estudiante_form
+    nombredb: nombredb
+    apellidodb: apellidodb
+    correodb: correodb
+    horario_grid: horario_grid
 #    status: result
     ActionBar:
         id: _action
@@ -48,24 +57,22 @@
                 color: 1, 1, 1, 1
                 app_icon: 'data/horarios.png'
                 with_previous: False
-                on_release: root.manager.current = root.manager.previous()
+                on_release: root.showhorario()
             ActionGroup:
-                text: 'File'
+                text: 'Opciones'
                 mode: 'spinner'
                 size_hint_x: None
                 width: 90
                 ActionButton:
-                    text: 'New'
+                    text: 'Ajustes'
+                    on_release: root.showajustes()
                 ActionButton:
-                    text: 'Open'
-                ActionButton:
-                    text: 'Save'
-                ActionButton:
-                    text: 'Save As'
-                ActionButton:
-                    text: 'Quit'
+                    text: 'Carnet'
+                    on_release: root.showloginform()
+
     ScreenManager:
         id: manager
+        transition: sm.NoTransition()
         top: -51
         canvas.before:
             Color:
@@ -74,7 +81,7 @@
                 size: self.size
                 pos: self.pos
         Screen:
-            name: 'login'
+            name: 'horario'
             FloatLayout
                 canvas.before:
                     Color:
@@ -83,7 +90,73 @@
                         size: self.size
                         pos: self.pos
                 VentanaProyecto:
-                    title: 'Iniciar sesion'
+                    id: estudiante_form
+                    title: 'Estudiante'
+                    titlecolor: 'FFFFFF'
+                    titlebackcolor: [.0509, .4275, .7137]
+                    size_hint: .8, .3
+                    pos_hint: {'center_x':.5, 'top':.99}
+                    bordercolor: [0,0,0]
+                    backcolor: [.8, .8, .8]
+                    borde: 1
+                    BoxLayout:
+                        size_hint: .8, .7
+                        pos_hint: {'center':(.5, .42)}
+                        orientation: 'vertical'
+                        LabelProyecto:
+                            texto: 'Nombre'
+                            backcolor: [.0509, .4275, .7137]
+                            textocolor: 'FFFFFF'
+                            bold: True
+                            bordercolor: [0, 0, 0]
+                            font_size: self.height * .45
+                        LabelProyecto:
+                            id: nombredb
+                            backcolor: [1, 1, 1]
+                            textocolor: '000000'
+                            bordercolor: [0, 0, 0]
+                            font_size: self.height * .45
+                        LabelProyecto:
+                            texto: 'Apellido'
+                            backcolor: [.0509, .4275, .7137]
+                            textocolor: 'FFFFFF'
+                            bold: True
+                            bordercolor: [0, 0, 0]
+                            font_size: self.height * .45
+                        LabelProyecto:
+                            id: apellidodb
+                            backcolor: [1, 1, 1]
+                            textocolor: '000000'
+                            bordercolor: [0, 0, 0]
+                            font_size: self.height * .45
+                        LabelProyecto:
+                            texto: 'Correo'
+                            backcolor: [.0509, .4275, .7137]
+                            textocolor: 'FFFFFF'
+                            bold: True
+                            bordercolor: [0, 0, 0]
+                            font_size: self.height * .45
+                        LabelProyecto:
+                            id: correodb
+                            backcolor: [1, 1, 1]
+                            textocolor: '000000'
+                            bordercolor: [0, 0, 0]
+                            font_size: self.height * .45
+                GridProyecto:
+                    id: horario_grid
+                    size_hint: .95, .57
+                    pos_hint: {'center_x':.5, 'top':.67}
+        Screen:
+            name: 'carnet'
+            FloatLayout
+                canvas.before:
+                    Color:
+                        rgb: 1, 1, 1
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                VentanaProyecto:
+                    title: 'Inserte Carnet'
                     titlecolor: 'FFFFFF'
                     titlebackcolor: [.0509, .4275, .7137]
                     size_hint: .8, .4
@@ -91,14 +164,78 @@
                     bordercolor: [0,0,0]
                     backcolor: [.8, .8, .8]
                     borde: 1
-
-
+                    BoxLayout:
+                        size_hint: .8, .7
+                        pos_hint: {'center':(.5, .4)}
+                        orientation: 'vertical'
+                        LabelProyecto:
+                            texto: 'Carnet'
+                            backcolor: [.0509, .4275, .7137]
+                            textocolor: 'FFFFFF'
+                            bold: True
+                            font_size: self.height * .45
+                        TextBoxProyecto:
+                            id: carnet_sync
+                            font_size: self.height * .45
+                            is_numeric: True
+                        Button:
+                            background_color: 0, 0, .4, 1
+                            background_normal: ''
+                            text: 'Sincronizar'
+                            color: 1,1,1,1
+                            font_size: self.height * .55
+                            bold: True
+                            on_release: root.syncronizar(carnet_sync.text)
 
         Screen:
-            name: ''
-            FloatLayout:
-                Label:
-                    text: 'Screen 2'
+            name: 'ajustes'
+            FloatLayout
+                canvas.before:
+                    Color:
+                        rgb: 1, 1, 1
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                VentanaProyecto:
+                    title: 'Ajustes'
+                    titlecolor: 'FFFFFF'
+                    titlebackcolor: [.0509, .4275, .7137]
+                    size_hint: .8, .6
+                    pos_hint: {'center':(.5, .5)}
+                    bordercolor: [0,0,0]
+                    backcolor: [.8, .8, .8]
+                    borde: 1
+                    BoxLayout:
+                        size_hint: .8, .7
+                        pos_hint: {'center':(.5, .4)}
+                        orientation: 'vertical'
+                        LabelProyecto:
+                            texto: 'Carnet'
+                            backcolor: [.0509, .4275, .7137]
+                            textocolor: 'FFFFFF'
+                            bold: True
+                            font_size: self.height * .45
+                        TextBoxProyecto:
+                            id: carnet_text
+                            is_numeric: True
+                            font_size: self.height * .45
+                        LabelProyecto:
+                            texto: 'API URL'
+                            backcolor: [.0509, .4275, .7137]
+                            textocolor: 'FFFFFF'
+                            bold: True
+                            font_size: self.height * .45
+                        TextBoxProyecto:
+                            id: api_url
+                            font_size: self.height * .45
+                        Button:
+                            background_color: 0, 0, .4, 1
+                            background_normal: ''
+                            text: 'Modificar'
+                            color: 1,1,1,1
+                            font_size: self.height * .55
+                            bold: True
+                            on_release: root.saveajustes(carnet_text.text, api_url.text)
 
 
 

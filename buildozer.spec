@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = Proyecto Final
+title = Horario App
 
 # (str) Package name
-package.name = pfinal
+package.name = horarioapp
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.uip
@@ -13,10 +13,10 @@ package.domain = org.uip
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas
+source.include_exts = py,png,jpg,kv,atlas,sqlite3
 
 # (list) Source files to exclude (let empty to not exclude anything)
-source.exclude_exts = spec
+source.exclude_exts = spec,xlsx
 
 # (list) List of directory to exclude (let empty to not exclude anything)
 source.exclude_dirs = bin, tarea3
@@ -33,7 +33,7 @@ version.filename = %(source.dir)s/main.py
 
 # (list) Application requirements
 # comma seperated e.g. requirements = sqlite3,kivy
-requirements = kivy
+requirements = sqlite3,kivy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -46,13 +46,13 @@ requirements = kivy
 #presplash.filename = %(source.dir)s/data/presplash.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
+icon.filename = %(source.dir)s/data/icon.png
 
 # (str) Supported orientation (one of landscape, portrait or all)
-orientation = landscape
+orientation = all
 
 # (bool) Indicate if the application should be fullscreen or not
-fullscreen = 1
+fullscreen = Yes
 
 
 #
@@ -60,16 +60,16 @@ fullscreen = 1
 #
 
 # (list) Permissions
-#android.permissions = INTERNET
+android.permissions = INTERNET
 
 # (int) Android API to use
 android.api = 21
 
 # (int) Minimum API required
-#android.minapi = 9
+android.minapi = 19
 
 # (int) Android SDK version to use
-android.sdk = 23
+android.sdk = 21
 
 # (str) Android NDK version to use
 android.ndk = 10e
@@ -111,7 +111,7 @@ android.ndk = 10e
 
 # (str) OUYA Console category. Should be one of GAME or APP
 # If you leave this blank, OUYA support will not be enabled
-#android.ouya.category = GAME
+#android.ouya.category = APP
 
 # (str) Filename of OUYA Console icon. It must be a 732x412 png image.
 #android.ouya.icon.filename = %(source.dir)s/data/ouya_icon.png

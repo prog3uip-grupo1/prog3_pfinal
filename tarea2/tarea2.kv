@@ -9,39 +9,24 @@
     bar_color: 1,0,0,.9
     bar_inactive_color: 1,0,0,.2
 
-    canvas.before:
-        Color:
-            rgb: 0.1,0.1,0.1
-        Rectangle:
-            size: self.size
-            pos: self.pos
-
 #Definicion de grid de datos
 <GridProyecto>:
     gHeader: gheader1
     gBody: gbody1
-
-    anchor_x: 'left'
-    anchor_y: 'top'
-#    canvas.before:
-#        Color:
-#            rgb: 1,1,1
-#        Rectangle:
-#            size: self.size
-#            pos: self.pos
     GridLayout:
         id: gheader1
         cols: root.columnas
         spacing: 1
-        pos: 0, root.height - root.rHeight
-        size_hint: None, None
+        size_hint: 1, None
+        pos_hint: {'x': 0, 'top': 1}
         height: root.rHeight
         row_default_height: root.rHeight
         row_force_default: False
 
     ScrollProyecto:
+        size_hint: 1, None
         height: root.height - (gheader1.height + 10)
-        pos: 0, 0
+        pos_hint: {'x': 0, 'y': 0}
         GridLayout:
             id: gbody1
             cols: root.columnas
@@ -162,7 +147,7 @@
             Rectangle
                 size: self.size
                 pos: self.pos
-                source: 'data/taxi.jpg'
+                source: 'data/horarios.png'
     LabelSPopup:
         id: mensaje
         size_hint: .788, 1

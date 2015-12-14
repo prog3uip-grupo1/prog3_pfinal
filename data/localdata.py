@@ -32,4 +32,101 @@ class LocalData(object):
             self.__conn.commit()
         return datos
 
+    def setdbsettings(self, lastuser, is_sync, canet_sync, django_api):
+        try:
+            c = self.__conn.cursor()
+            t = (lastuser, is_sync, canet_sync, django_api,)
+            c.execute('UPDATE settings SET lastuser=?, is_sync=?, carnet_sync=?, django_api=? WHERE id=1;', t)
+            self.__conn.commit()
+        except Exception:
+            return False
+        return True
 
+    def is_exist(self, carnet):
+        try:
+            c = self.__conn.cursor()
+            t = (carnet,)
+            c.execute('SELECT 1 FROM estudiantes WHERE carnet=?;', t)
+            datos = c.fetchone()
+            self.__conn.commit()
+            if len(datos) > 0:
+                return True
+            else:
+                return False
+        except Exception:
+            return False
+
+
+    def delestudiante(self, carnet):
+        try:
+            c = self.__conn.cursor()
+            t = (carnet,)
+            c.execute('DELETE FROM estudiantes WHERE carnet=?;', t)
+            self.__conn.commit()
+        except Exception:
+            return False
+        return True
+
+    def addestudiante(self, carnet, nombre, apellido, email):
+        try:
+            c = self.__conn.cursor()
+            t = (carnet, nombre, apellido, email,)
+            c.execute('INSERT INTO estudiantes(carnet, nombre, apellido, email) VALUES(?, ?, ?, ?);', t)
+            self.__conn.commit()
+        except Exception:
+            return False
+        return True
+
+    def is_existhorario(self, carnet):
+        try:
+            c = self.__conn.cursor()
+            t = (carnet,)
+            c.execute('SELECT 1 FROM horario WHERE carnet=?;', t)
+            datos = c.fetchone()
+            self.__conn.commit()
+            if len(datos) > 0:
+                return True
+            else:
+                return False
+        except Exception:
+            return False
+
+    def delhorarios(self, carnet):
+        try:
+            c = self.__conn.cursor()
+            t = (carnet,)
+            c.execute('DELETE FROM horario WHERE carnet=?;', t)
+            self.__conn.commit()
+        except Exception:
+            return False
+        return True
+
+    def addhorario(self, id, carnet, codigo, nombre, dia, hora, aula, profesor, tiempo):
+        try:
+            c = self.__conn.cursor()
+            t = (id, carnet, codigo, nombre, self.changedia(dia), hora, aula, profesor, tiempo,)
+            c.execute('INSERT INTO horario(id, carnet, codigo, nombre, dia, hora, aula, profesor, tiempo) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);', t)
+            self.__conn.commit()
+        except Exception:
+            return False
+        return True
+
+    def changedia(self, value):
+        dias = {0: 'L', 1: 'M', 2: 'W', 3: 'J', 4: 'V', 5: 'S', 6: 'D',}
+        return dias[value]
+
+    def getestudiante(self, carnet):
+        c = self.__conn.cursor()
+        t = (carnet,)
+        c.execute('SELECT carnet, nombre, apellido, email FROM estudiantes WHERE carnet=?;', t)
+        datos = c.fetchone()
+        self.__conn.commit()
+        return datos
+
+    def gethorario(self, carnet):
+        c = self.__conn.cursor()
+        t = (carnet,)
+        c.execute('SELECT codigo, nombre, dia, hora, aula FROM horario WHERE carnet=?;', t)
+        datos = c.fetchall()
+        self.__conn.commit()
+        return datos

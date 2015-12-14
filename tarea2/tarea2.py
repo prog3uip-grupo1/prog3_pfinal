@@ -60,11 +60,6 @@ class GridProyecto(FloatLayout):
     rHeight = NumericProperty(30)
     columnas = NumericProperty()
     filas = NumericProperty()
-    # colHeaders = ListProperty()
-    # rowTypes = ListProperty()
-    # rowAlign = ListProperty()
-    # colDisabled = ListProperty()
-    # colSizes = ListProperty()
     gfields = GridFields()
     __datasource = SQLData
     __rows = PGDatos()
@@ -76,23 +71,18 @@ class GridProyecto(FloatLayout):
     @datasource.setter
     def datasource(self, value):
         self.__datasource = value
-        for rowdic in self.__datasource.getapidata():
+        self.delGridRow()
+        for rowdic in self.__datasource:
             datarow = []
             for col in range(self.gfields.columns):
-                datarow.append(rowdic[self.gfields.getfield(col).fldData])
+                datarow.append(rowdic[self.gfields.getfield(col).fldCol])
             self.addgridrow(datarow)
 
     def addcolumna(self, colheader, rowtype="txt", rowalign="center", colsize=200, coldisable=False, datafield=''):
         """Agrega una columna al grid"""
-        # self.colHeaders.append(colheader)
-        # self.rowTypes.append(rowtype)
-        # self.rowAlign.append(rowalign)
-        # self.colDisabled.append(coldisable)
-        # self.colSizes.append(colsize)
         self.gfields.add(GridField(fldheader=colheader, fldtype=rowtype, fldalign=rowalign, flddisabled=coldisable,
                                    fldwidth=colsize, flddata=datafield))
         self.columnas = self.gfields.columns
-#        self.gfields.columns += 1
 
     def addheaders(self):
         """Funcion que crea todas las celdas para utilizarse como encabezado de los grids"""
@@ -101,12 +91,13 @@ class GridProyecto(FloatLayout):
         for col in range(self.columnas):
             hdr = GridHeader()
             hdr.id = "hdr_col{0}".format(col)
-            hdr.width = self.gfields.getfield(col).fldWidth
+            hdr.size_hint_x = self.gfields.getfield(col).fldWidth
             hdr.padding = [5, 5]
             hdr.text = '[color=ffffff][b][size=16]{0}[/size][/b][/color]'.format(self.gfields.getfield(col).fldHeader)
             hdr.halign = 'center'
             hdr.valign = 'middle'
             hdr.markup = True
+            hdr.bgcolor= [.0509, .4275, .7137]
 #            hdr.text_size = hdr.size
             gHdr.add_widget(hdr)
 
@@ -127,11 +118,12 @@ class GridProyecto(FloatLayout):
                                                 self.gfields.getfield(col).fldType))
         self.__rows.addrow(rowdata[self.gfields.key], rowdata[:self.gfields.key] + rowdata[(self.gfields.key + 1):])
 
-    def getcellchk(self, fila, columna, Activo, Disabled = False, Size=200, Tipo="chk"):
+    def getcellchk(self, fila, columna, Activo, Disabled = False, Size=200.0, Tipo="chk"):
         """Funcion que devuelve una celda completa para manejo de checkbox"""
         cell = GridCCell()
         cell.id = "{0}_row{1}_col{2}".format(Tipo, fila, columna)
-        cell.width = Size
+        cell.size_hint_x = Size
+        #cell.width = Size
         cell.active = Activo
         cell.disabled = Disabled
         cell.background_checkbox_disabled_down = 'atlas://data/images/defaulttheme/checkbox_on'
@@ -140,20 +132,21 @@ class GridProyecto(FloatLayout):
             cell.bind(active=self.borradoclick)
         return cell
 
-    def getcelllabel(self, fila, columna, Texto, Halign='left', Disabled = False, Size=200, Tipo="txt", Valign='middle'):
+    def getcelllabel(self, fila, columna, Texto, Halign='left', Disabled = False, Size=200.0, Tipo="txt", Valign='middle'):
         """Funcion que devuelve una celda completa para manejo de etiquitas"""
         cell = GridCell()
         cell.id = "{0}_row{0}_col{1}".format(Tipo, fila, columna)
         if Tipo == "key":
             cell.key = str(Texto)
-        cell.width = Size
+        cell.size_hint_x = Size
+        #cell.width = Size
         cell.padding = [5,5]
         cell.text = '[color=000000]{0}[/color]'.format(Texto)
         cell.halign = Halign
         cell.valign = Valign
         cell.disabled = Disabled
         cell.markup = True
-        cell.text_size = cell.size
+        #cell.text_size = cell.size
         return cell
 
     def borradoclick(self, cell, value):
@@ -175,7 +168,7 @@ class GridProyecto(FloatLayout):
                 if range == "All" or c.borrado:
                     if range != "All" and c.id == "key":
                         self._rows.delrow(c.key)
-                        self.gBody.remove_widget(c)
+                    self.gBody.remove_widget(c)
 
 
 class GridHeader(Label):
@@ -489,7 +482,7 @@ class TextBoxProyecto(TextInput):
     __accept_spaces = BooleanProperty(True)
     __is_password = BooleanProperty(False)
 
-    __pattern = '[^a-zA-Z0-9_ ]'
+    __pattern = '[^a-zA-Z0-9_/:. ]'
 
     def __init__(self, **kwargs):
         super(TextBoxProyecto, self).__init__(**kwargs)
@@ -505,7 +498,7 @@ class TextBoxProyecto(TextInput):
         elif self.__is_numeric:
             self.__pattern = '[^0-9]'
         elif self.__accept_spaces:
-            self.__pattern = '[^a-zA-Z0-9_ ]'
+            self.__pattern = '[^a-zA-Z0-9_/:. ]'
         else:
             self.__pattern = '[^a-zA-Z0-9_]'
 
