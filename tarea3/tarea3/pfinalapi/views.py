@@ -1,7 +1,6 @@
 # Create your views here.
 
 from rest_framework import generics
-from rest_framework import filters
 from tarea3.pfinalapi.models import Estudiante, Horarios
 from tarea3.pfinalapi.serializers import EstudianteSerializer, HorariosSerializer
 from rest_framework import permissions
