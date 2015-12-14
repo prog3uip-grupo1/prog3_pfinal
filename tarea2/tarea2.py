@@ -222,7 +222,6 @@ class GridProyecto(FloatLayout):
             cell.font_size = self.rHeight * .30
         for hdrs in self.__ghdrs:
             hdrs.font_size = self.rHeight * .30
-        print self.rHeight
 
     @property
     def datasource(self):
