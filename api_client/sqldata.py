@@ -1,12 +1,11 @@
 from kivy.network.urlrequest import UrlRequest
 from putils import AppMiscError
-#req = UrlRequest(url, on_success, on_redirect, on_failure, on_error,
-#                 on_progress, req_body, req_headers, chunk_size,
-#                 timeout, method, decode, debug, file_path, ca_file,
-#                 verify)
 
 
 class SQLData(object):
+    """
+        Clase que maneja datos y coneccion a web service en django usando jason
+    """
     __tmpresult = {}
     __success = False
     __errormsg = ''

@@ -3,6 +3,9 @@ from tarea2.tarea2 import showmessagebox
 
 
 class LocalData(object):
+    """
+        Clase que maneja datos de la base de datos local en sqlite3
+    """
     __dspath = 'data'
 
     def __init__(self, dsname):

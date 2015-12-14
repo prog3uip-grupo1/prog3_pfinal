@@ -14,6 +14,9 @@ from data.localdata import LocalData
 
 
 class MainWindow(FloatLayout):
+    """
+        Clase que representa la ventana principal
+    """
     __lastuser = ''
     __is_sync = False
     __carnet_sync = ''
@@ -35,6 +38,9 @@ class MainWindow(FloatLayout):
     correodb = ObjectProperty(None)
 
     def __init__(self):
+        """
+            Sobre escribe el constructor de la clase FloatLayout
+        """
         try:
 
             FloatLayout.__init__(self)
@@ -59,6 +65,9 @@ class MainWindow(FloatLayout):
             showmessagebox(exp.title, exp.message)
 
     def getappsettings(self):
+        """
+            Adquiere datos de la tabla settings en la base de datos local
+        """
         settings = self.ldatos.getdbsettings()
         self.__lastuser = settings[0]
         self.__is_sync = settings[1]
@@ -66,15 +75,24 @@ class MainWindow(FloatLayout):
         self.__django_api = settings[3]
 
     def setappsettings(self):
+        """
+            Actualiza los datos de la tabla settings
+        """
         self.ldatos.setdbsettings(self.__lastuser, self.__is_sync, self.__carnet_sync, self.__django_api)
 
     def showajustes(self):
+        """
+            Despliega lo ventana de ajustes
+        """
         self.getappsettings()
         self.carnet_text.text = self.__carnet_sync
         self.api_url.text = self.__django_api
         self.manager.current = 'ajustes'
 
     def saveajustes(self, carnet_text, api_url):
+        """
+            Actualiza los datos de la ventana deajustes al apretar el boton
+        """
         if carnet_text != '':
             self.__is_sync = True
         else:
@@ -85,10 +103,16 @@ class MainWindow(FloatLayout):
         self.setappsettings()
 
     def showloginform(self):
+        """
+            Muestra la ventana para insertar el numero de carnet
+        """
         self.carnet_sync.text = self.__carnet_sync
         self.manager.current = 'carnet'
 
     def showhorario(self):
+        """
+            Muestra la ventana con los carnets
+        """
         if not self.__is_sync or self.__carnet_sync == '':
             self.showloginform()
         else:
@@ -104,6 +128,9 @@ class MainWindow(FloatLayout):
             self.manager.current = 'horario'
 
     def syncronizar(self, carnet):
+        """
+            Syncroniza la base de datos local con los datos adquiridos del API en django
+        """
         try:
             if carnet != '':
                 self.datos_api.view = 'estudiante/{0}'.format(carnet)
@@ -127,6 +154,9 @@ class MainWindow(FloatLayout):
 
 
 class PFinalApp(App):
+    """
+        Clase de la aplicacion principal
+    """
     def build(self):
         self.title = 'Proyecto Final - Horario'
         return MainWindow()

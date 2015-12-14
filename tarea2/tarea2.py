@@ -219,9 +219,10 @@ class GridProyecto(FloatLayout):
         self.gHeader.row_default_height = self.height * .1
         self.gBody.row_default_height = self.height * .1
         for cell in self.__gcells:
-            cell.font_size = self.rHeight * .37
+            cell.font_size = self.rHeight * .30
         for hdrs in self.__ghdrs:
-            hdrs.font_size = self.rHeight * .37
+            hdrs.font_size = self.rHeight * .30
+        print self.rHeight
 
     @property
     def datasource(self):
@@ -231,11 +232,13 @@ class GridProyecto(FloatLayout):
     def datasource(self, value):
         self.__datasource = value
         self.delGridRow()
+        self.__gcells = []
         for rowdic in self.__datasource:
             datarow = []
             for col in range(self.gfields.columns):
                 datarow.append(rowdic[self.gfields.getfield(col).fldCol])
             self.addgridrow(datarow)
+
 
     def addcolumna(self, colheader, rowtype="txt", rowalign="center", colsize=200, coldisable=False, datafield=''):
         """Agrega una columna al grid"""
@@ -251,12 +254,12 @@ class GridProyecto(FloatLayout):
             hdr = GridHeader()
             hdr.id = "hdr_col{0}".format(col)
             hdr.size_hint_x = self.gfields.getfield(col).fldWidth
-            hdr.padding = [5, 5]
-            hdr.text = '[color=ffffff][b]{0}[/b][/color]'.format(self.gfields.getfield(col).fldHeader)
+            hdr.text = '[color=ffffff]{0}[/color]'.format(self.gfields.getfield(col).fldHeader)
             hdr.halign = 'center'
             hdr.valign = 'middle'
             hdr.markup = True
             hdr.bgcolor= [.0509, .4275, .7137]
+            hdr.font_size = self.rHeight * .30
             #hdr.text_size = hdr.size
             self.__ghdrs.append(hdr)
             gHdr.add_widget(hdr)
@@ -300,12 +303,13 @@ class GridProyecto(FloatLayout):
             cell.key = str(Texto)
         cell.size_hint_x = Size
         #cell.width = Size
-        cell.padding = [5,5]
+        #cell.padding = [5,5]
         cell.text = '[color=000000]{0}[/color]'.format(Texto)
         cell.halign = Halign
         cell.valign = Valign
         cell.disabled = Disabled
         cell.markup = True
+        cell.font_size = self.rHeight * .30
         self.__gcells.append(cell)
         #cell.text_size = cell.size
         return cell
@@ -332,7 +336,7 @@ class GridProyecto(FloatLayout):
                     self.gBody.remove_widget(c)
 
 
-class GridHeader(LabelProyecto):
+class GridHeader(Label):
     """Inicializa la clase derivada de BoxLayout como base del encabezado de los grids"""
     height = NumericProperty(40)
     bgcolor = ListProperty([0.4, 0.4, 0.4])

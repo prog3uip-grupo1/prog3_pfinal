@@ -9,7 +9,9 @@ def showmessagebox(Titulo, Mensaje):
 
 
 class AppMiscError(RuntimeError):
-
+    """
+        Excepcion que permite asignar titulo y mensaje
+    """
     def __init__(self, title, message):
         self.title = title
         self.message = message
@@ -17,6 +19,9 @@ class AppMiscError(RuntimeError):
 
 
 class PGDatos(object):
+    """
+        Clase que maneja listas
+    """
     _dic = {}
     _nombreArchivo = ""
 
