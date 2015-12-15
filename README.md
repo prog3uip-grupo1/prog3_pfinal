@@ -17,4 +17,4 @@ Como temas para el proyecto se estan considerando las siguientes opciones
         Julio Lerma
         Rodrigo Vergara
         Eliecer Samaniego
-        Moises Mirabal
+     
